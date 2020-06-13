@@ -3,44 +3,26 @@ import os
 import random
 
 # config
-width = 500
-height = 500
-lines = 21
-columns = 10
+width = 700
+height = 700
+lines = 21  # width = 420
+columns = 12  # height = 240
 playtime = 0.0
 FPS = 35
 pixel = 20
 init_fall_speed = 0.15
-offset_x = 150
-offset_y = 80
+offset_x = 230
+offset_y = 180
 
 # screen blit adjustments
+mini_offset_y = 20
 offset_y_2 = 40
 left_dist = 120
 right_dist = 30
 
-landed =\
-    [[0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-     [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-     [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-     [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-     [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-     [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-     [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-     [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-     [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-     [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-     [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-     [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-     [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-     [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-     [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-     [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-     [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-     [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-     [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-     [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-     [0, 0, 0, 0, 0, 0, 0, 0, 0, 0]]
+landed = \
+    [[0 for x in range(columns)] for y in range(lines)]
+
 c_blue = \
     [[[0, 0, 0, 0, 0], [0, 0, 0, 0, 0], [1, 1, 1, 1, 0], [0, 0, 0, 0, 0], [0, 0, 0, 0, 0]],
      [[0, 0, 0, 0, 0], [0, 1, 0, 0, 0], [0, 1, 0, 0, 0], [0, 1, 0, 0, 0], [0, 1, 0, 0, 0]],
@@ -89,22 +71,23 @@ c_green2 = \
      [[0, 0, 0, 0, 0], [0, 0, 0, 0, 0], [0, 0, 10, 10, 0], [0, 10, 10, 0, 0], [0, 0, 0, 0, 0]],
      [[0, 0, 0, 0, 0], [0, 0, 0, 0, 0], [0, 10, 0, 0, 0], [0, 10, 10, 0, 0], [0, 0, 10, 0, 0]]]
 c_orange2 = [[[0, 0, 0, 0, 0], [0, 11, 11, 11, 0], [0, 11, 0, 0, 0], [0, 0, 0, 0, 0], [0, 0, 0, 0, 0]],
-            [[0, 0, 0, 0, 0], [0, 11, 11, 0, 0], [0, 0, 11, 0, 0], [0, 0, 11, 0, 0], [0, 0, 0, 0, 0]],
-            [[0, 0, 0, 0, 0], [0, 0, 0, 11, 0], [0, 11, 11, 11, 0], [0, 0, 0, 0, 0], [0, 0, 0, 0, 0]],
-            [[0, 0, 0, 0, 0], [0, 11, 0, 0, 0], [0, 11, 0, 0, 0], [0, 11, 11, 0, 0], [0, 0, 0, 0, 0]]]
+             [[0, 0, 0, 0, 0], [0, 11, 11, 0, 0], [0, 0, 11, 0, 0], [0, 0, 11, 0, 0], [0, 0, 0, 0, 0]],
+             [[0, 0, 0, 0, 0], [0, 0, 0, 11, 0], [0, 11, 11, 11, 0], [0, 0, 0, 0, 0], [0, 0, 0, 0, 0]],
+             [[0, 0, 0, 0, 0], [0, 11, 0, 0, 0], [0, 11, 0, 0, 0], [0, 11, 11, 0, 0], [0, 0, 0, 0, 0]]]
 c_purple2 = \
     [[[0, 0, 0, 0, 0], [0, 0, 12, 0, 0], [0, 12, 12, 12, 0], [0, 0, 0, 0, 0], [0, 0, 0, 0, 0]],
      [[0, 0, 0, 0, 0], [0, 0, 12, 0, 0], [0, 0, 12, 12, 0], [0, 0, 12, 0, 0], [0, 0, 0, 0, 0]],
      [[0, 0, 0, 0, 0], [0, 0, 0, 0, 0], [0, 12, 12, 12, 0], [0, 0, 12, 0, 0], [0, 0, 0, 0, 0]],
      [[0, 0, 0, 0, 0], [0, 0, 12, 0, 0], [0, 12, 12, 0, 0], [0, 0, 12, 0, 0], [0, 0, 0, 0, 0]]]
 c_red2 = [[[0, 0, 0, 0, 0], [0, 0, 0, 0, 0], [0, 13, 13, 0, 0], [0, 0, 13, 13, 0], [0, 0, 0, 0, 0]],
-         [[0, 0, 0, 0, 0], [0, 0, 13, 0, 0], [0, 13, 13, 0, 0], [0, 13, 0, 0, 0], [0, 0, 0, 0, 0]],
-         [[0, 0, 0, 0, 0], [0, 0, 0, 0, 0], [0, 13, 13, 0, 0], [0, 0, 13, 13, 0], [0, 0, 0, 0, 0]],
-         [[0, 0, 0, 0, 0], [0, 0, 13, 0, 0], [0, 13, 13, 0, 0], [0, 13, 0, 0, 0], [0, 0, 0, 0, 0]]]
+          [[0, 0, 0, 0, 0], [0, 0, 13, 0, 0], [0, 13, 13, 0, 0], [0, 13, 0, 0, 0], [0, 0, 0, 0, 0]],
+          [[0, 0, 0, 0, 0], [0, 0, 0, 0, 0], [0, 13, 13, 0, 0], [0, 0, 13, 13, 0], [0, 0, 0, 0, 0]],
+          [[0, 0, 0, 0, 0], [0, 0, 13, 0, 0], [0, 13, 13, 0, 0], [0, 13, 0, 0, 0], [0, 0, 0, 0, 0]]]
 c_yellow2 = [[[0, 0, 0, 0, 0], [0, 0, 0, 0, 0], [0, 14, 14, 0, 0], [0, 14, 14, 0, 0], [0, 0, 0, 0, 0]],
-            [[0, 0, 0, 0, 0], [0, 0, 0, 0, 0], [0, 14, 14, 0, 0], [0, 14, 14, 0, 0], [0, 0, 0, 0, 0]],
-            [[0, 0, 0, 0, 0], [0, 0, 0, 0, 0], [0, 14, 14, 0, 0], [0, 14, 14, 0, 0], [0, 0, 0, 0, 0]],
-            [[0, 0, 0, 0, 0], [0, 0, 0, 0, 0], [0, 14, 14, 0, 0], [0, 14, 14, 0, 0], [0, 0, 0, 0, 0]]]
+             [[0, 0, 0, 0, 0], [0, 0, 0, 0, 0], [0, 14, 14, 0, 0], [0, 14, 14, 0, 0], [0, 0, 0, 0, 0]],
+             [[0, 0, 0, 0, 0], [0, 0, 0, 0, 0], [0, 14, 14, 0, 0], [0, 14, 14, 0, 0], [0, 0, 0, 0, 0]],
+             [[0, 0, 0, 0, 0], [0, 0, 0, 0, 0], [0, 14, 14, 0, 0], [0, 14, 14, 0, 0], [0, 0, 0, 0, 0]]]
+
 
 # converts the 2D array to list of positions
 # eliminates 0s for no interruptions
@@ -143,6 +126,7 @@ def new_block():
         return c_red
     elif num == 7:
         return c_yellow
+
 
 def new_block2():
     num = random.randrange(8, 15)
@@ -196,15 +180,15 @@ class Game(object):
         self.screen = pygame.display.set_mode((width, height), pygame.RESIZABLE)
 
         # setup surfaces for refreshing
-        self.block_cover = pygame.Surface((80, 80))  # refresh next block
         self.pause_cover = pygame.Surface((120, 30))
-        self.wipe_text = pygame.Surface((90, 50))  # refresh score
-        self.wipe_surf = pygame.Surface((self.screen.get_size()))  # wipe_surf = pausing, wipe_surf_complete erases entire screen
-        self.wipe_surf_complete = pygame.Surface((self.screen.get_size()))  # wipe_surf = pausing, wipe_surf_complete erases entire screen
+        self.wipe_text = pygame.Surface((110, 40))  # refresh score
+        self.wipe_surf = pygame.Surface(
+            (self.screen.get_size()))  # wipe_surf = pausing, wipe_surf_complete erases entire screen
+        self.wipe_surf_complete = pygame.Surface(
+            (self.screen.get_size()))  # wipe_surf = pausing, wipe_surf_complete erases entire screen
         self.end_screen = pygame.Surface((self.background.get_size()))
 
         # fill Surfaces
-        self.block_cover.fill((20, 0, 0))
         self.pause_cover.fill((0, 0, 0))
         self.wipe_text.fill((0, 0, 0))
         self.wipe_surf.fill((0, 0, 0))
@@ -224,14 +208,12 @@ class Game(object):
         self.red = self.red.convert()
         self.yellow = self.yellow.convert()
         self.grid_block = self.grid_block.convert()
-        self.block_cover = self.block_cover.convert()
         self.pause_cover = self.pause_cover.convert()
         self.background = self.background.convert()
         self.wipe_text = self.wipe_text.convert()
         self.wipe_surf.convert_alpha()
         self.wipe_surf_complete = self.wipe_surf_complete.convert()
         self.end_screen = self.end_screen.convert_alpha()
-
 
         # num lines, num cols
         self.lines = len(landed)
@@ -241,22 +223,24 @@ class Game(object):
         pygame.display.set_caption("Tetris!")
 
     def run(self):
-        #holding
+        # holding
         font = pygame.font.SysFont(None, 25)
         hold_block_type = None
+        hold_block_type2 = None
         can_hold = True
+        can_hold2 = True
         hold_font = font.render("HOLD", True, (255, 255, 255))
         # pause
         pause_font = font.render("PAUSED", True, (255, 255, 255))
         paused = False
         # score
-        score = 0
+        score = 100
         score_diff = 0
-        #level
+        # level
         level = 1
         level_font = font.render("LEVEL: %d" % level, True, (255, 255, 255))
 
-        #intervals
+        # intervals
         last_pressed_down = 0
         last_pressed_side = 0
         last_fall = 0
@@ -267,7 +251,7 @@ class Game(object):
         interval = 65
         down_interval = 90
 
-        #block data
+        # block data
         movable = False
         movable2 = False
         clear = False
@@ -285,13 +269,13 @@ class Game(object):
         rotate_val2 = 0
         block, rotate_val = rotate(block_type, rotate_val)
         block2, rotate_val2 = rotate(block_type2, rotate_val2)
-        temp_left = 5
+        temp_left = 2
         temp_top = 2
-        b_left = 5
+        b_left = 2
         b_top = 2
-        temp_left2 = 5
+        temp_left2 = 7
         temp_top2 = 2
-        b_left2 = 5
+        b_left2 = 7
         b_top2 = 2
 
         # level data
@@ -302,7 +286,12 @@ class Game(object):
         no_down = False  # stops going down thru blocks when landed
         no_down2 = False
 
-        #main loop
+        # 2 Player Safe
+        b_landed1 = False
+        b_landed2 = False
+        player_font1 = font.render("PLAYER 1", True, (255, 255, 255))
+        player_font2 = font.render("PLAYER 2", True, (255, 255, 255))
+        # main loop
         while mainloop:
             score_font = font.render("SCORE: %d" % score, True, (255, 255, 255))
             last_pressed_down += self.clock.get_time()
@@ -356,25 +345,27 @@ class Game(object):
                     if event.key == pygame.K_ESCAPE:
                         mainloop = False
                     elif event.key == pygame.K_DOWN:
-                        speed_y = 1
+                        speed_y2 = 1
                     elif event.key == pygame.K_LEFT:
-                        speed_x = -1
+                        speed_x2 = -1
                     elif event.key == pygame.K_RIGHT:
-                        speed_x = 1
+                        speed_x2 = 1
                     elif event.key == pygame.K_UP:
-                        block, rotate_val, b_left = self.can_rotate(block, block_type, b_left, b_top, rotate_val)
+                        block2, rotate_val2, b_left2 = self.can_rotate(block2, block_type2, b_left2, b_top2,
+                                                                       rotate_val2)
+                    elif event.key == pygame.K_SLASH:
+                        change_piece2, b_left2, b_top2, speed_x2, speed_y2 = self.drop(block2, b_left2, b_top2)
+                    elif event.key == pygame.K_s:
+                        speed_y = 1
+                    elif event.key == pygame.K_a:
+                        speed_x = -1
+                    elif event.key == pygame.K_d:
+                        speed_x = 1
+                    elif event.key == pygame.K_w:
+                        block, rotate_val, b_left = self.can_rotate(block, block_type, b_left, b_top,
+                                                                    rotate_val)
                     elif event.key == pygame.K_SPACE:
                         change_piece, b_left, b_top, speed_x, speed_y = self.drop(block, b_left, b_top)
-                    elif event.key == pygame.K_s:
-                        speed_y2 = 1
-                    elif event.key == pygame.K_a:
-                        speed_x2 = -1
-                    elif event.key == pygame.K_d:
-                        speed_x2 = 1
-                    elif event.key == pygame.K_w:
-                        block2, rotate_val2, b_left2 = self.can_rotate(block2, block_type2, b_left2, b_top2, rotate_val2)
-                    elif event.key == pygame.K_SPACE:
-                        change_piece2, b_left2, b_top2, speed_x2, speed_y2 = self.drop(block2, b_left2, b_top2)
                 elif event.type == pygame.KEYUP:
                     if event.key == pygame.K_p:
                         if not paused:
@@ -394,14 +385,15 @@ class Game(object):
                             pygame.mixer.music.play(-1, 0.0)
                             paused = False
                             self.screen.blit(self.background, (offset_x, offset_y))
-                            self.screen.blit(score_font, (offset_x + columns*pixel + right_dist, offset_y))
-                            self.screen.blit(level_font, (offset_x + columns*pixel + right_dist, offset_y + offset_y_2))
+                            self.screen.blit(score_font, (offset_x + columns * pixel + right_dist, mini_offset_y))
+                            self.screen.blit(level_font,
+                                             (offset_x + columns * pixel + right_dist, mini_offset_y + offset_y_2))
                             self.draw_landed()
                             self.draw_block(block, b_left, b_top)
                             self.draw_block2(block, b_left2, b_top2)
                             self.screen.blit(self.pause_cover, (offset_x + 60, 30))
                             pygame.display.flip()
-                    elif event.key == pygame.K_c:
+                    elif event.key == pygame.K_LSHIFT:
                         speed_x = 0
                         speed_y = 0
                         if can_hold:
@@ -411,63 +403,63 @@ class Game(object):
                                 hold_block_type = temp_block_type
                                 rotate_val = 0
                                 block, rotate_val = rotate(block_type, rotate_val)
-                                b_left = 5
+                                b_left = 2
                                 b_top = 2
                                 temp_top = 2
-                                temp_left = 5
+                                temp_left = 2
                                 change_piece = False
                             else:
                                 hold_block_type = block_type
                                 block_type = new_block()
                                 rotate_val = 0
                                 block, rotate_val = rotate(block_type, rotate_val)
-                                b_left = 5
+                                b_left = 2
                                 b_top = 2
                                 temp_top = 2
-                                temp_left = 5
+                                temp_left = 2
                                 change_piece = False
                         can_hold = False
-                    # elif event.key == pygame.K_c:
-                    #     speed_x2 = 0
-                    #     speed_y2 = 0
-                    #     if can_hold:
-                    #         if hold_block_type:
-                    #             temp_block_type = block_type
-                    #             block_type = hold_block_type
-                    #             hold_block_type = temp_block_type
-                    #             rotate_val = 0
-                    #             block, rotate_val = rotate(block_type, rotate_val)
-                    #             b_left = 5
-                    #             b_top = 2
-                    #             temp_top = 2
-                    #             temp_left = 5
-                    #             change_piece = False
-                    #         else:
-                    #             hold_block_type = block_type
-                    #             block_type = new_block()
-                    #             rotate_val = 0
-                    #             block, rotate_val = rotate(block_type, rotate_val)
-                    #             b_left = 5
-                    #             b_top = 2
-                    #             temp_top = 2
-                    #             temp_left = 5
-                    #             change_piece = False
-                    #     can_hold = False
-                    elif event.key == pygame.K_DOWN:
-                        speed_y = 0
-                    elif event.key == pygame.K_LEFT:
-                        speed_x = 0
-                    elif event.key == pygame.K_RIGHT:
-                        speed_x = 0
-                    elif event.key == pygame.K_s:
+                    elif event.key == pygame.K_PERIOD:
+                        speed_x2 = 0
                         speed_y2 = 0
+                        if can_hold2:
+                            if hold_block_type2:
+                                temp_block_type2 = block_type2
+                                block_type2 = hold_block_type2
+                                hold_block_type2 = temp_block_type2
+                                rotate_val2 = 0
+                                block2, rotate_val2 = rotate(block_type2, rotate_val2)
+                                b_left2 = 7
+                                b_top2 = 2
+                                temp_top2 = 2
+                                temp_left2 = 7
+                                change_piece2 = False
+                            else:
+                                hold_block_type2 = block_type2
+                                block_type2 = new_block2()
+                                rotate_val2 = 0
+                                block2, rotate_val2 = rotate(block_type2, rotate_val2)
+                                b_left2 = 7
+                                b_top2 = 2
+                                temp_top2 = 2
+                                temp_left2 = 7
+                                change_piece2 = False
+                        can_hold2 = False
+                    elif event.key == pygame.K_DOWN:
+                        speed_y2 = 0
+                    elif event.key == pygame.K_LEFT:
+                        speed_x2 = 0
+                    elif event.key == pygame.K_RIGHT:
+                        speed_x2 = 0
+                    elif event.key == pygame.K_s:
+                        speed_y = 0
                     elif event.key == pygame.K_a:
-                        speed_x2 = 0
+                        speed_x = 0
                     elif event.key == pygame.K_d:
-                        speed_x2 = 0
+                        speed_x = 0
                 # elif event.type == pygame.VIDEORESIZE:
-                    # self.screen.blit(pygame.transform.scale(self.background, event.dict['size']), (0, 0))
-                    # pygame.display.update()
+                # self.screen.blit(pygame.transform.scale(self.background, event.dict['size']), (0, 0))
+                # pygame.display.update()
 
             # controlled movement (not too fast)
             if last_pressed_side >= interval:
@@ -490,76 +482,128 @@ class Game(object):
                 b_left = temp_left
                 b_top = temp_top
             else:
-                #update temptop, templeft
+                # update temptop, templeft
                 temp_left = b_left
                 temp_top = b_top
             if self.can_move(block2, temp_left2, temp_top2):
                 b_left2 = temp_left2
                 b_top2 = temp_top2
             else:
-                #update temptop, templeft
+                # update temptop, templeft
                 temp_left2 = b_left2
                 temp_top2 = b_top2
 
+            # check if blocks overlap
+            overlap_clear = True
+            pos1 = convert_block(block, b_left, b_top)
+            pos2 = convert_block(block2, b_left2, b_top2)
+            for pos in pos1:
+                if pos in pos2:
+                    overlap_clear = False
+            if overlap_clear:
+                b_landed1 = False
+                b_landed2 = False
+
+            # landing pieces
             if change_piece:
-                fall_speed = init_fall_speed - (level * 0.02)
-                color = 0
-                no_down = False
-                #recharge hold
-                can_hold = True
-                # find color
-                for row in block:
-                    for col in row:
-                        if col > 0:
-                            color = col
+                if b_landed2:
+                    change_piece = False
+                    b_landed2 = False
+                    if self.can_move(block, b_left, b_top):
+                        b_top = b_top
+                    elif self.can_move(block, b_left, b_top - 1):
+                        b_top = b_top - 1
+                    elif self.can_move(block, b_left, b_top - 2):
+                        b_top = b_top - 2
+                    elif self.can_move(block, b_left, b_top - 3):
+                        b_top = b_top - 3
+                    elif self.can_move(block, b_left - 1, b_top):
+                        b_left = b_left - 1
+                    elif self.can_move(block, b_left + 1, b_top):
+                        b_left = b_left + 1
+                    b_landed1 = True
+                else:
+                    fall_speed = init_fall_speed - (level * 0.02)
+                    color = 0
+                    no_down = False
+                    # recharge hold
+                    can_hold = True
+                    # find color
+                    for row in block:
+                        for col in row:
+                            if col > 0:
+                                color = col
+                                break
+                    for i in range(len(block_pos)):
+                        x, y = block_pos[i]
+                        landed[y][x] = color
+                    if check_lost(block_pos):
+                        self.draw_landed()
+                        mainloop, fall_speed, score, hold_block_type, level, speed_x, speed_y = self.lose_screen(
+                            fall_speed, score,
+                            hold_block_type, level, speed_x, speed_y)
+                        if not mainloop:
                             break
-                for i in range(len(block_pos)):
-                    x, y = block_pos[i]
-                    landed[y][x] = color
-                if check_lost(block_pos):
-                    self.draw_landed()
-                    mainloop, fall_speed, score, hold_block_type, level = self.lose_screen(fall_speed, score, hold_block_type, level)
-                    if not mainloop:
-                        break
-                block_type = next_block_type
-                next_block_type = new_block()
-                rotate_val = 0
-                block, rotate_val = rotate(block_type, rotate_val)
-                b_left = 5
-                b_top = 2
-                temp_top = 2
-                temp_left = 5
-                change_piece = False
+                    block_type = next_block_type
+                    next_block_type = new_block()
+                    rotate_val = 0
+                    block, rotate_val = rotate(block_type, rotate_val)
+                    b_left = 2
+                    b_top = 2
+                    temp_top = 2
+                    temp_left = 2
+                    change_piece = False
+                    b_landed1 = True
 
             if change_piece2:
-                fall_speed2 = init_fall_speed - (level * 0.02)
-                color = 0
-                no_down2 = False
-                #recharge hold
-                can_hold2 = True
-                # find color
-                for row in block2:
-                    for col in row:
-                        if col > 0:
-                            color = col
+                if b_landed1:
+                    change_piece2 = False
+                    b_landed1 = False
+                    if self.can_move(block2, b_left2, b_top2):
+                        b_top2 = b_top2
+                    elif self.can_move(block2, b_left2, b_top2 - 1):
+                        b_top2 = b_top2 - 1
+                    elif self.can_move(block2, b_left2, b_top2 - 2):
+                        b_top2 = b_top2 - 2
+                    elif self.can_move(block2, b_left2, b_top2 - 3):
+                        b_top2 = b_top2 - 3
+                    elif self.can_move(block2, b_left2 - 1, b_top2):
+                        b_left2 = b_left2 - 1
+                    elif self.can_move(block2, b_left2 + 1, b_top2):
+                        b_left2 = b_left2 + 1
+                    b_landed2 = True
+                else:
+                    fall_speed = init_fall_speed - (level * 0.02)
+                    color = 0
+                    no_down2 = False
+                    # recharge hold
+                    can_hold2 = True
+                    # find color
+                    for row in block2:
+                        for col in row:
+                            if col > 0:
+                                color = col
+                                break
+                    for i in range(len(block_pos2)):
+                        x, y = block_pos2[i]
+                        landed[y][x] = color
+                    if check_lost(block_pos2):
+                        self.draw_landed()
+                        mainloop, fall_speed, score, hold_block_type2, level, speed_x2, speed_y2 = self.lose_screen(
+                            fall_speed, score,
+                            hold_block_type2, level, speed_x2, speed_y2)
+                        if not mainloop:
                             break
-                for i in range(len(block_pos2)):
-                    x, y = block_pos2[i]
-                    landed[y][x] = color
-                if check_lost(block_pos2):
-                    self.draw_landed()
-                    mainloop, fall_speed, score, hold_block_type2, level = self.lose_screen(fall_speed, score, hold_block_type2, level)
-                    if not mainloop:
-                        break
-                block_type2 = next_block_type2
-                next_block_type2 = new_block2()
-                rotate_val2 = 0
-                block2, rotate_val2 = rotate(block_type2, rotate_val2)
-                b_left2 = 5
-                b_top2 = 2
-                temp_top2 = 2
-                temp_left2 = 5
-                change_piece2 = False
+                    block_type2 = next_block_type2
+                    next_block_type2 = new_block2()
+                    rotate_val2 = 0
+                    block2, rotate_val2 = rotate(block_type2, rotate_val2)
+                    b_left2 = 7
+                    b_top2 = 2
+                    temp_top2 = 2
+                    temp_left2 = 7
+                    change_piece2 = False
+                    b_landed2 = True
 
             # check for cleared lines
             clear = True
@@ -575,19 +619,30 @@ class Game(object):
                     clear = True
 
             # blit all
-            self.screen.blit(self.wipe_text, (offset_x + columns*pixel + right_dist, offset_y))
-            self.screen.blit(self.wipe_text, (offset_x + columns*pixel + right_dist, offset_y + offset_y_2))
-            self.screen.blit(self.wipe_text, (offset_x - left_dist, offset_y))
+            self.screen.blit(self.wipe_text, (offset_x + columns * pixel + right_dist, mini_offset_y))  # score
+            self.screen.blit(self.wipe_text,
+                             (offset_x + columns * pixel + right_dist, mini_offset_y + offset_y_2))  # level
+            self.screen.blit(self.wipe_text, (offset_x - left_dist, offset_y + 3 * offset_y_2))  # hold1
+            self.screen.blit(self.wipe_text,
+                             (offset_x + columns * pixel + right_dist, offset_y + 3 * offset_y_2))  # hold2
+            self.screen.blit(self.wipe_text, (offset_x - left_dist, offset_y - mini_offset_y))  # player 1
+            self.screen.blit(self.wipe_text, (offset_x + columns*pixel + right_dist, offset_y - mini_offset_y))  # player 2
             if not paused:
                 self.screen.blit(self.background, (offset_x, offset_y))
-                self.draw_hold_block(hold_block_type)
-                self.draw_next_block(next_block_type)
+                self.draw_hold_block(hold_block_type, 1)
+                self.draw_hold_block(hold_block_type2, 2)
+                self.draw_next_block(next_block_type, 1)
+                self.draw_next_block(next_block_type2, 2)
                 self.draw_landed()
                 self.draw_block(block, b_left, b_top)
                 self.draw_block2(block2, b_left2, b_top2)
-            self.screen.blit(level_font, (offset_x + columns*pixel + right_dist, offset_y + offset_y_2))
-            self.screen.blit(score_font, (offset_x + columns*pixel + right_dist, offset_y))
-            self.screen.blit(hold_font, ((offset_x - left_dist), offset_y))
+            self.screen.blit(score_font, (offset_x + columns * pixel + right_dist, mini_offset_y))
+            self.screen.blit(level_font, (offset_x + columns * pixel + right_dist, mini_offset_y + offset_y_2))
+            self.screen.blit(hold_font, (offset_x - left_dist, offset_y + 3 * offset_y_2))
+            self.screen.blit(hold_font, (offset_x + columns * pixel + right_dist, offset_y + 3 * offset_y_2))
+            self.screen.blit(player_font1, (offset_x - left_dist, offset_y - mini_offset_y))  # player 1
+            self.screen.blit(player_font2, (offset_x + columns*pixel + right_dist, offset_y - mini_offset_y))  # player 2
+
             pygame.display.flip()
 
     def draw_landed(self):
@@ -598,7 +653,7 @@ class Game(object):
     def draw_block(self, block, b_left, b_top):
         pos = convert_block(block, b_left, b_top)
         color = 0
-        #find color
+        # find color
         for row in block:
             for col in row:
                 if col > 0:
@@ -625,7 +680,7 @@ class Game(object):
     def draw_block2(self, block2, b_left2, b_top2):
         pos = convert_block(block2, b_left2, b_top2)
         color = 0
-        #find color
+        # find color
         for row in block2:
             for col in row:
                 if col > 0:
@@ -649,52 +704,158 @@ class Game(object):
                 elif color == 14:
                     self.screen.blit(self.yellow2, (x * pixel + offset_x, y * pixel + offset_y))
 
-    def draw_hold_block(self, hold_block_type):
-        if not hold_block_type:
-            hold_block = [[0 for i in range(5)] for j in range(5)]
-        else:
-            hold_block = hold_block_type[0]
-        self.screen.blit(self.block_cover, (offset_x - left_dist, offset_y + offset_y_2))
-        for row in range(len(hold_block)):
-            for col in range(len(hold_block[0])):
-                if hold_block[row][col] == 0:
-                    self.screen.blit(self.grid_block, ((col * pixel) + offset_x - left_dist, (row * pixel) + offset_y + offset_y_2))
-                elif hold_block[row][col] == 1:
-                    self.screen.blit(self.blue, ((col * pixel) + offset_x - left_dist, (row * pixel) + offset_y + offset_y_2))
-                elif hold_block[row][col] == 2:
-                    self.screen.blit(self.dblue, ((col * pixel) + offset_x - left_dist, (row * pixel) + offset_y + offset_y_2))
-                elif hold_block[row][col] == 3:
-                    self.screen.blit(self.green, ((col * pixel) + offset_x - left_dist, (row * pixel) + offset_y + offset_y_2))
-                elif hold_block[row][col] == 4:
-                    self.screen.blit(self.orange, ((col * pixel) + offset_x - left_dist, (row * pixel) + offset_y + offset_y_2))
-                elif hold_block[row][col] == 5:
-                    self.screen.blit(self.purple, ((col * pixel) + offset_x - left_dist, (row * pixel) + offset_y + offset_y_2))
-                elif hold_block[row][col] == 6:
-                    self.screen.blit(self.red, ((col * pixel) + offset_x - left_dist, (row * pixel) + offset_y + offset_y_2))
-                elif hold_block[row][col] == 7:
-                    self.screen.blit(self.yellow, ((col * pixel) + offset_x - left_dist, (row * pixel) + offset_y + offset_y_2))
+    def draw_hold_block(self, hold_block_type, player):
+        if player == 1:
+            if not hold_block_type:
+                hold_block = [[0 for i in range(5)] for j in range(5)]
+            else:
+                hold_block = hold_block_type[0]
+            for row in range(len(hold_block)):
+                for col in range(len(hold_block[0])):
+                    if hold_block[row][col] == 0:
+                        self.screen.blit(self.grid_block,
+                                         ((col * pixel) + offset_x - left_dist,
+                                          (row * pixel) + offset_y + 4 * offset_y_2))
+                    elif hold_block[row][col] == 1:
+                        self.screen.blit(self.blue,
+                                         ((col * pixel) + offset_x - left_dist,
+                                          (row * pixel) + offset_y + 4 * offset_y_2))
+                    elif hold_block[row][col] == 2:
+                        self.screen.blit(self.dblue,
+                                         ((col * pixel) + offset_x - left_dist,
+                                          (row * pixel) + offset_y + 4 * offset_y_2))
+                    elif hold_block[row][col] == 3:
+                        self.screen.blit(self.green,
+                                         ((col * pixel) + offset_x - left_dist,
+                                          (row * pixel) + offset_y + 4 * offset_y_2))
+                    elif hold_block[row][col] == 4:
+                        self.screen.blit(self.orange,
+                                         ((col * pixel) + offset_x - left_dist,
+                                          (row * pixel) + offset_y + 4 * offset_y_2))
+                    elif hold_block[row][col] == 5:
+                        self.screen.blit(self.purple,
+                                         ((col * pixel) + offset_x - left_dist,
+                                          (row * pixel) + offset_y + 4 * offset_y_2))
+                    elif hold_block[row][col] == 6:
+                        self.screen.blit(self.red,
+                                         ((col * pixel) + offset_x - left_dist,
+                                          (row * pixel) + offset_y + 4 * offset_y_2))
+                    elif hold_block[row][col] == 7:
+                        self.screen.blit(self.yellow,
+                                         ((col * pixel) + offset_x - left_dist,
+                                          (row * pixel) + offset_y + 4 * offset_y_2))
+        elif player == 2:
+            if not hold_block_type:
+                hold_block = [[0 for i in range(5)] for j in range(5)]
+            else:
+                hold_block = hold_block_type[0]
+            for row in range(len(hold_block)):
+                for col in range(len(hold_block[0])):
+                    if hold_block[row][col] == 0:
+                        self.screen.blit(self.grid_block,
+                                         ((col * pixel) + offset_x + columns * pixel + right_dist,
+                                          (row * pixel) + offset_y + 4 * offset_y_2))
+                    elif hold_block[row][col] == 8:
+                        self.screen.blit(self.blue2,
+                                         ((col * pixel) + offset_x + columns * pixel + right_dist,
+                                          (row * pixel) + offset_y + 4 * offset_y_2))
+                    elif hold_block[row][col] == 9:
+                        self.screen.blit(self.dblue2,
+                                         ((col * pixel) + offset_x + columns * pixel + right_dist,
+                                          (row * pixel) + offset_y + 4 * offset_y_2))
+                    elif hold_block[row][col] == 10:
+                        self.screen.blit(self.green2,
+                                         ((col * pixel) + offset_x + columns * pixel + right_dist,
+                                          (row * pixel) + offset_y + 4 * offset_y_2))
+                    elif hold_block[row][col] == 11:
+                        self.screen.blit(self.orange2,
+                                         ((col * pixel) + offset_x + columns * pixel + right_dist,
+                                          (row * pixel) + offset_y + 4 * offset_y_2))
+                    elif hold_block[row][col] == 12:
+                        self.screen.blit(self.purple2,
+                                         ((col * pixel) + offset_x + columns * pixel + right_dist,
+                                          (row * pixel) + offset_y + 4 * offset_y_2))
+                    elif hold_block[row][col] == 13:
+                        self.screen.blit(self.red2,
+                                         ((col * pixel) + offset_x + columns * pixel + right_dist,
+                                          (row * pixel) + offset_y + 4 * offset_y_2))
+                    elif hold_block[row][col] == 14:
+                        self.screen.blit(self.yellow2,
+                                         ((col * pixel) + offset_x + columns * pixel + right_dist,
+                                          (row * pixel) + offset_y + 4 * offset_y_2))
 
-    def draw_next_block(self, next_block_type):
+    def draw_next_block(self, next_block_type, player):
         next_block = next_block_type[0]
-        self.screen.blit(self.block_cover, (offset_x + columns * pixel + right_dist, offset_y + 2 * offset_y_2))
-        for row in range(len(next_block)):
-            for col in range(len(next_block[0])):
-                if next_block[row][col] == 0:
-                    self.screen.blit(self.grid_block, (col*pixel + offset_x + columns*pixel + right_dist, row*pixel + offset_y + 2*offset_y_2))
-                elif next_block[row][col] == 1:
-                    self.screen.blit(self.blue, (col*pixel + offset_x + columns*pixel + right_dist, row*pixel + offset_y + 2*offset_y_2))
-                elif next_block[row][col] == 2:
-                    self.screen.blit(self.dblue, (col*pixel + offset_x + columns*pixel + right_dist, row*pixel + offset_y + 2*offset_y_2))
-                elif next_block[row][col] == 3:
-                    self.screen.blit(self.green, (col*pixel + offset_x + columns*pixel + right_dist, row*pixel + offset_y + 2*offset_y_2))
-                elif next_block[row][col] == 4:
-                    self.screen.blit(self.orange, (col*pixel + offset_x + columns*pixel + right_dist, row*pixel + offset_y + 2*offset_y_2))
-                elif next_block[row][col] == 5:
-                    self.screen.blit(self.purple, (col*pixel + offset_x + columns*pixel + right_dist, row*pixel + offset_y + 2*offset_y_2))
-                elif next_block[row][col] == 6:
-                    self.screen.blit(self.red, (col*pixel + offset_x + columns*pixel + right_dist, row*pixel + offset_y + 2*offset_y_2))
-                elif next_block[row][col] == 7:
-                    self.screen.blit(self.yellow, (col*pixel + offset_x + columns*pixel + right_dist, row*pixel + offset_y + 2*offset_y_2))
+        if player == 1:
+            for row in range(len(next_block)):
+                for col in range(len(next_block[0])):
+                    if next_block[row][col] == 0:
+                        self.screen.blit(self.grid_block, (
+                            col * pixel + offset_x - left_dist,
+                            row * pixel + offset_y))
+                    elif next_block[row][col] == 1:
+                        self.screen.blit(self.blue, (
+                            col * pixel + offset_x - left_dist,
+                            row * pixel + offset_y))
+                    elif next_block[row][col] == 2:
+                        self.screen.blit(self.dblue, (
+                            col * pixel + offset_x - left_dist,
+                            row * pixel + offset_y))
+                    elif next_block[row][col] == 3:
+                        self.screen.blit(self.green, (
+                            col * pixel + offset_x - left_dist,
+                            row * pixel + offset_y))
+                    elif next_block[row][col] == 4:
+                        self.screen.blit(self.orange, (
+                            col * pixel + offset_x - left_dist,
+                            row * pixel + offset_y))
+                    elif next_block[row][col] == 5:
+                        self.screen.blit(self.purple, (
+                            col * pixel + offset_x - left_dist,
+                            row * pixel + offset_y))
+                    elif next_block[row][col] == 6:
+                        self.screen.blit(self.red, (
+                            col * pixel + offset_x - left_dist,
+                            row * pixel + offset_y))
+                    elif next_block[row][col] == 7:
+                        self.screen.blit(self.yellow, (
+                            col * pixel + offset_x - left_dist,
+                            row * pixel + offset_y))
+        elif player == 2:
+            for row in range(len(next_block)):
+                for col in range(len(next_block[0])):
+                    if next_block[row][col] == 0:
+                        self.screen.blit(self.grid_block, (
+                            col * pixel + offset_x + columns * pixel + right_dist,
+                            row * pixel + offset_y))
+                    elif next_block[row][col] == 8:
+                        self.screen.blit(self.blue2, (
+                            col * pixel + offset_x + columns * pixel + right_dist,
+                            row * pixel + offset_y))
+                    elif next_block[row][col] == 9:
+                        self.screen.blit(self.dblue2, (
+                            col * pixel + offset_x + columns * pixel + right_dist,
+                            row * pixel + offset_y))
+                    elif next_block[row][col] == 10:
+                        self.screen.blit(self.green2, (
+                            col * pixel + offset_x + columns * pixel + right_dist,
+                            row * pixel + offset_y))
+                    elif next_block[row][col] == 11:
+                        self.screen.blit(self.orange2, (
+                            col * pixel + offset_x + columns * pixel + right_dist,
+                            row * pixel + offset_y))
+                    elif next_block[row][col] == 12:
+                        self.screen.blit(self.purple2, (
+                            col * pixel + offset_x + columns * pixel + right_dist,
+                            row * pixel + offset_y))
+                    elif next_block[row][col] == 13:
+                        self.screen.blit(self.red2, (
+                            col * pixel + offset_x + columns * pixel + right_dist,
+                            row * pixel + offset_y))
+                    elif next_block[row][col] == 14:
+                        self.screen.blit(self.yellow2, (
+                            col * pixel + offset_x + columns * pixel + right_dist,
+                            row * pixel + offset_y))
 
     def draw_color(self, co_list, row, col, left=0, top=0):
         if co_list[row][col] == 1:
@@ -726,12 +887,14 @@ class Game(object):
         elif co_list[row][col] == 14:
             self.screen.blit(self.yellow2, ((col + left) * pixel + offset_x, (row + top) * pixel + offset_y))
 
-    def lose_screen(self, fall_speed, score, hold_block_type, level):
+    def lose_screen(self, fall_speed, score, hold_block_type, level, speed_x, speed_y):
         pygame.mixer.music.stop()
         hold_block_type = None
         hold_block_type2 = None
         level = 1
         score = 0
+        speed_x = 0
+        speed_y = 0
         fall_speed = init_fall_speed - (level * 0.02)
         font = pygame.font.SysFont(None, 25, True, False)
         text = font.render("GAME OVER", True, (255, 255, 255))
@@ -757,7 +920,7 @@ class Game(object):
                         end_loop = False
                         self.screen.blit(self.wipe_surf_complete, (0, 0))
                         self.restart_landed()
-        return mainloop, fall_speed, score, hold_block_type, level
+        return mainloop, fall_speed, score, hold_block_type, level, speed_x, speed_y
 
     def restart_landed(self):
         for x in range(self.lines):
@@ -772,7 +935,7 @@ class Game(object):
                 landed[0] = [i * 0 for i in range(self.col)]
         else:
             for row in range(len(landed) - 1, 0, -1):
-                landed[row] = landed[row-1]
+                landed[row] = landed[row - 1]
             else:
                 landed[0] = [i * 0 for i in range(self.col)]
 
@@ -814,6 +977,7 @@ class Game(object):
             temp_top += 1
         temp_top -= 1
         return True, b_left, temp_top, 0, 0
+
 
 if __name__ == "__main__":
     Game().run()
