@@ -180,7 +180,7 @@ class Game(object):
 
         # setup surfaces for refreshing
         self.pause_cover = pygame.Surface((120, 30))
-        self.wipe_text = pygame.Surface((110, 40))  # refresh score
+        self.wipe_text = pygame.Surface((110, 20))  # refresh score
         self.wipe_surf = pygame.Surface(
             (self.screen.get_size()))  # wipe_surf = pausing, wipe_surf_complete erases entire screen
         self.wipe_surf_complete = pygame.Surface(
@@ -237,7 +237,7 @@ class Game(object):
         pause_font = title_font.render("PAUSED", True, (255, 255, 255))
         paused = False
         # score
-        score = 100
+        score = 0
         score_diff = 0
         # level
         level = 1
@@ -308,7 +308,7 @@ class Game(object):
             self.clock.tick_busy_loop(FPS)
 
             # level up
-            if score_diff >= 50:
+            if score - score_diff >= 50:
                 level += 1
                 score_diff = score
                 level_font = font.render("LEVEL: %d" % level, True, (255, 255, 255))
@@ -934,13 +934,18 @@ class Game(object):
 
     def main_screen(self):
         title_font = pygame.font.SysFont(None, 100)
-        desc_font = pygame.font.SysFont(None, 40)
+        # desc_font = pygame.font.SysFont("berlinsansfbdemi", 40)
+        desc_font = pygame.font.SysFont("sitkasmallsitkatextbolditalicsitkasubheadingboldita"
+                                        "licsitkaheadingbolditalicsitkadisplaybolditalicsitk"
+                                        "abannerbolditalic", 40)
         title = title_font.render("2 PLAYER TETRIS", True, (255, 255, 255))
         title_rect = title.get_rect()
-        desc = desc_font.render("Press any key to start", True, (255, 255, 255))
+        desc = desc_font.render("Press any key to start", True, (200, 255, 255))
         desc_rect = desc.get_rect()
-        title_rect.center = (int(width/2), int(height/2 - 30))
-        desc_rect.center = (int(width/2), int(height/2) + 50)
+        title_rect.center = (int(width/2), int(height/2 - 150))
+        desc_rect.center = (int(width/2), int(height/2) + 100)
+        title = pygame.image.load(os.path.join("data", "title2.png"))
+        title = pygame.transform.scale(title, (600, 250))
         self.screen.blit(title, title_rect)
         self.screen.blit(desc, desc_rect)
         # self.screen.blit(title, (50, height/2 - 150))
