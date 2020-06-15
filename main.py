@@ -159,7 +159,6 @@ class Game(object):
         pygame.init()
         folder = "data"
         pygame.mixer.music.load(os.path.join(folder, "theme.ogg"))
-        pygame.mixer.music.play(-1, 0.0)
         self.clock = pygame.time.Clock()
         self.blue = pygame.image.load(os.path.join(folder, "b.png"))
         self.dblue = pygame.image.load(os.path.join(folder, "d.png"))
@@ -223,22 +222,26 @@ class Game(object):
         pygame.display.set_caption("Tetris!")
 
     def run(self):
+        # on startup
+        self.main_screen()
+        pygame.mixer.music.play(-1, 0.0)
         # holding
         font = pygame.font.SysFont(None, 25)
+        title_font = pygame.font.SysFont(None, 50)
         hold_block_type = None
         hold_block_type2 = None
         can_hold = True
         can_hold2 = True
-        hold_font = font.render("HOLD", True, (255, 255, 255))
+        hold_font = font.render("HOLD", True, (200, 215, 215))
         # pause
-        pause_font = font.render("PAUSED", True, (255, 255, 255))
+        pause_font = title_font.render("PAUSED", True, (255, 255, 255))
         paused = False
         # score
         score = 100
         score_diff = 0
         # level
         level = 1
-        level_font = font.render("LEVEL: %d" % level, True, (255, 255, 255))
+        level_font = font.render("LEVEL: %d" % level, True, (200, 215, 215))
 
         # intervals
         last_pressed_down = 0
@@ -287,13 +290,15 @@ class Game(object):
         no_down2 = False
 
         # 2 Player Safe
+        last_landed = []
+        last_landed2 = []
         b_landed1 = False
         b_landed2 = False
-        player_font1 = font.render("PLAYER 1", True, (255, 255, 255))
-        player_font2 = font.render("PLAYER 2", True, (255, 255, 255))
+        player_font1 = font.render("PLAYER 1", True, (200, 215, 215))
+        player_font2 = font.render("PLAYER 2", True, (200, 215, 215))
         # main loop
         while mainloop:
-            score_font = font.render("SCORE: %d" % score, True, (255, 255, 255))
+            score_font = font.render("SCORE: %d" % score, True, (200, 215, 215))
             last_pressed_down += self.clock.get_time()
             last_pressed_side += self.clock.get_time()
             fall_time += self.clock.get_time()
@@ -380,7 +385,7 @@ class Game(object):
                             last_pressed_down2 = 0
                             last_pressed_side2 = 0
                             paused = True
-                            self.screen.blit(pause_font, (offset_x + 60, 30))
+                            self.screen.blit(pause_font, (offset_x + 40, 80))
                         else:
                             pygame.mixer.music.play(-1, 0.0)
                             paused = False
@@ -495,10 +500,13 @@ class Game(object):
 
             # check if blocks overlap
             overlap_clear = True
-            pos1 = convert_block(block, b_left, b_top)
-            pos2 = convert_block(block2, b_left2, b_top2)
-            for pos in pos1:
-                if pos in pos2:
+            last_pos = convert_block(last_landed, b_left, b_top)
+            last_pos2 = convert_block(last_landed2, b_left, b_top)
+            for pos in block_pos:
+                if pos in last_pos2:
+                    overlap_clear = False
+            for pos in block_pos2:
+                if pos in last_pos:
                     overlap_clear = False
             if overlap_clear:
                 b_landed1 = False
@@ -506,6 +514,7 @@ class Game(object):
 
             # landing pieces
             if change_piece:
+                last_landed = block2
                 if b_landed2:
                     change_piece = False
                     b_landed2 = False
@@ -556,6 +565,7 @@ class Game(object):
                     b_landed1 = True
 
             if change_piece2:
+                last_landed2 = block2
                 if b_landed1:
                     change_piece2 = False
                     b_landed1 = False
@@ -715,35 +725,35 @@ class Game(object):
                     if hold_block[row][col] == 0:
                         self.screen.blit(self.grid_block,
                                          ((col * pixel) + offset_x - left_dist,
-                                          (row * pixel) + offset_y + 4 * offset_y_2))
+                                          (row * pixel) + offset_y + 4 * offset_y_2 - 20))
                     elif hold_block[row][col] == 1:
                         self.screen.blit(self.blue,
                                          ((col * pixel) + offset_x - left_dist,
-                                          (row * pixel) + offset_y + 4 * offset_y_2))
+                                          (row * pixel) + offset_y + 4 * offset_y_2 - 20))
                     elif hold_block[row][col] == 2:
                         self.screen.blit(self.dblue,
                                          ((col * pixel) + offset_x - left_dist,
-                                          (row * pixel) + offset_y + 4 * offset_y_2))
+                                          (row * pixel) + offset_y + 4 * offset_y_2 - 20))
                     elif hold_block[row][col] == 3:
                         self.screen.blit(self.green,
                                          ((col * pixel) + offset_x - left_dist,
-                                          (row * pixel) + offset_y + 4 * offset_y_2))
+                                          (row * pixel) + offset_y + 4 * offset_y_2 - 20))
                     elif hold_block[row][col] == 4:
                         self.screen.blit(self.orange,
                                          ((col * pixel) + offset_x - left_dist,
-                                          (row * pixel) + offset_y + 4 * offset_y_2))
+                                          (row * pixel) + offset_y + 4 * offset_y_2 - 20))
                     elif hold_block[row][col] == 5:
                         self.screen.blit(self.purple,
                                          ((col * pixel) + offset_x - left_dist,
-                                          (row * pixel) + offset_y + 4 * offset_y_2))
+                                          (row * pixel) + offset_y + 4 * offset_y_2 - 20))
                     elif hold_block[row][col] == 6:
                         self.screen.blit(self.red,
                                          ((col * pixel) + offset_x - left_dist,
-                                          (row * pixel) + offset_y + 4 * offset_y_2))
+                                          (row * pixel) + offset_y + 4 * offset_y_2 - 20))
                     elif hold_block[row][col] == 7:
                         self.screen.blit(self.yellow,
                                          ((col * pixel) + offset_x - left_dist,
-                                          (row * pixel) + offset_y + 4 * offset_y_2))
+                                          (row * pixel) + offset_y + 4 * offset_y_2 - 20))
         elif player == 2:
             if not hold_block_type:
                 hold_block = [[0 for i in range(5)] for j in range(5)]
@@ -754,35 +764,35 @@ class Game(object):
                     if hold_block[row][col] == 0:
                         self.screen.blit(self.grid_block,
                                          ((col * pixel) + offset_x + columns * pixel + right_dist,
-                                          (row * pixel) + offset_y + 4 * offset_y_2))
+                                          (row * pixel) + offset_y + 4 * offset_y_2 - 20))
                     elif hold_block[row][col] == 8:
                         self.screen.blit(self.blue2,
                                          ((col * pixel) + offset_x + columns * pixel + right_dist,
-                                          (row * pixel) + offset_y + 4 * offset_y_2))
+                                          (row * pixel) + offset_y + 4 * offset_y_2 - 20))
                     elif hold_block[row][col] == 9:
                         self.screen.blit(self.dblue2,
                                          ((col * pixel) + offset_x + columns * pixel + right_dist,
-                                          (row * pixel) + offset_y + 4 * offset_y_2))
+                                          (row * pixel) + offset_y + 4 * offset_y_2 - 20))
                     elif hold_block[row][col] == 10:
                         self.screen.blit(self.green2,
                                          ((col * pixel) + offset_x + columns * pixel + right_dist,
-                                          (row * pixel) + offset_y + 4 * offset_y_2))
+                                          (row * pixel) + offset_y + 4 * offset_y_2 - 20))
                     elif hold_block[row][col] == 11:
                         self.screen.blit(self.orange2,
                                          ((col * pixel) + offset_x + columns * pixel + right_dist,
-                                          (row * pixel) + offset_y + 4 * offset_y_2))
+                                          (row * pixel) + offset_y + 4 * offset_y_2 - 20))
                     elif hold_block[row][col] == 12:
                         self.screen.blit(self.purple2,
                                          ((col * pixel) + offset_x + columns * pixel + right_dist,
-                                          (row * pixel) + offset_y + 4 * offset_y_2))
+                                          (row * pixel) + offset_y + 4 * offset_y_2 - 20))
                     elif hold_block[row][col] == 13:
                         self.screen.blit(self.red2,
                                          ((col * pixel) + offset_x + columns * pixel + right_dist,
-                                          (row * pixel) + offset_y + 4 * offset_y_2))
+                                          (row * pixel) + offset_y + 4 * offset_y_2 - 20))
                     elif hold_block[row][col] == 14:
                         self.screen.blit(self.yellow2,
                                          ((col * pixel) + offset_x + columns * pixel + right_dist,
-                                          (row * pixel) + offset_y + 4 * offset_y_2))
+                                          (row * pixel) + offset_y + 4 * offset_y_2 - 20))
 
     def draw_next_block(self, next_block_type, player):
         next_block = next_block_type[0]
@@ -896,14 +906,14 @@ class Game(object):
         speed_x = 0
         speed_y = 0
         fall_speed = init_fall_speed - (level * 0.02)
-        font = pygame.font.SysFont(None, 25, True, False)
+        font = pygame.font.SysFont(None, 35, True, False)
         text = font.render("GAME OVER", True, (255, 255, 255))
         text2 = font.render("PRESS \'R\' TO RESTART", True, (250, 250, 250))
         end_loop = True
         mainLoop = True
         self.screen.blit(self.end_screen, (offset_x, offset_y))
-        self.screen.blit(text, (offset_x + 50, 30))
-        self.screen.blit(text2, (offset_x, 60))
+        self.screen.blit(text, (offset_x + 30, 75))
+        self.screen.blit(text2, (offset_x - 40, 105))
         pygame.display.flip()
         while end_loop:
             for event in pygame.event.get():
@@ -921,6 +931,32 @@ class Game(object):
                         self.screen.blit(self.wipe_surf_complete, (0, 0))
                         self.restart_landed()
         return mainloop, fall_speed, score, hold_block_type, level, speed_x, speed_y
+
+    def main_screen(self):
+        title_font = pygame.font.SysFont(None, 100)
+        desc_font = pygame.font.SysFont(None, 40)
+        title = title_font.render("2 PLAYER TETRIS", True, (255, 255, 255))
+        title_rect = title.get_rect()
+        desc = desc_font.render("Press any key to start", True, (255, 255, 255))
+        desc_rect = desc.get_rect()
+        title_rect.center = (int(width/2), int(height/2 - 30))
+        desc_rect.center = (int(width/2), int(height/2) + 50)
+        self.screen.blit(title, title_rect)
+        self.screen.blit(desc, desc_rect)
+        # self.screen.blit(title, (50, height/2 - 150))
+        # self.screen.blit(desc, (200, height/2 - 70))
+        pygame.display.flip()
+        main_screen = True
+        while main_screen:
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    # pygame window closed by user
+                    mainloop = False
+                    main_screen = False
+                    pygame.quit()
+                elif event.type == pygame.KEYDOWN:
+                    self.screen.blit(self.wipe_surf_complete, (0, 0))
+                    main_screen = False
 
     def restart_landed(self):
         for x in range(self.lines):
