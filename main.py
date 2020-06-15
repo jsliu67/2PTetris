@@ -179,7 +179,7 @@ class Game(object):
         self.screen = pygame.display.set_mode((width, height), pygame.RESIZABLE)
 
         # setup surfaces for refreshing
-        self.pause_cover = pygame.Surface((120, 30))
+        self.pause_cover = pygame.Surface((150, 50))
         self.wipe_text = pygame.Surface((110, 20))  # refresh score
         self.wipe_surf = pygame.Surface(
             (self.screen.get_size()))  # wipe_surf = pausing, wipe_surf_complete erases entire screen
@@ -396,7 +396,7 @@ class Game(object):
                             self.draw_landed()
                             self.draw_block(block, b_left, b_top)
                             self.draw_block2(block, b_left2, b_top2)
-                            self.screen.blit(self.pause_cover, (offset_x + 60, 30))
+                            self.screen.blit(self.pause_cover, (offset_x + 40, 80))
                             pygame.display.flip()
                     elif event.key == pygame.K_LSHIFT:
                         speed_x = 0
