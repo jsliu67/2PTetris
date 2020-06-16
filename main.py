@@ -308,7 +308,7 @@ class Game(object):
             self.clock.tick_busy_loop(FPS)
 
             # level up
-            if score - score_diff >= 50:
+            if score - score_diff >= 10:
                 level += 1
                 score_diff = score
                 level_font = font.render("LEVEL: %d" % level, True, (255, 255, 255))
@@ -322,12 +322,14 @@ class Game(object):
                     no_down = True
                     if last_fall >= down_interval:
                         last_fall = 0
+                        print(1)
                         change_piece = True
                     b_top -= 1
                 elif self.can_move(block, b_left, b_top):
                     no_down = False
                     last_fall = 0
-
+            print(change_piece)
+            print(last_fall)
             if fall_time2 / 1000.0 > fall_speed and not paused:
                 fall_time2 = 0
                 b_top2 += 1
@@ -501,7 +503,7 @@ class Game(object):
             # check if blocks overlap
             overlap_clear = True
             last_pos = convert_block(last_landed, b_left, b_top)
-            last_pos2 = convert_block(last_landed2, b_left, b_top)
+            last_pos2 = convert_block(last_landed2, b_left2, b_top2)
             for pos in block_pos:
                 if pos in last_pos2:
                     overlap_clear = False
@@ -514,13 +516,9 @@ class Game(object):
 
             # landing pieces
             if change_piece:
-                last_landed = block2
-                if b_landed2:
-                    change_piece = False
-                    b_landed2 = False
-                    if self.can_move(block, b_left, b_top):
-                        b_top = b_top
-                    elif self.can_move(block, b_left, b_top - 1):
+                last_landed = block
+                if not self.can_move(block, b_left, b_top):
+                    if self.can_move(block, b_left, b_top - 1):
                         b_top = b_top - 1
                     elif self.can_move(block, b_left, b_top - 2):
                         b_top = b_top - 2
@@ -551,6 +549,15 @@ class Game(object):
                         mainloop, fall_speed, score, hold_block_type, level, speed_x, speed_y = self.lose_screen(
                             fall_speed, score,
                             hold_block_type, level, speed_x, speed_y)
+                        # update other block
+                        block_type2 = next_block_type2
+                        next_block_type2 = new_block2()
+                        rotate_val2 = 0
+                        block2, rotate_val2 = rotate(block_type2, rotate_val2)
+                        b_left2 = 7
+                        b_top2 = 2
+                        temp_top2 = 2
+                        temp_left2 = 7
                         if not mainloop:
                             break
                     block_type = next_block_type
@@ -566,12 +573,8 @@ class Game(object):
 
             if change_piece2:
                 last_landed2 = block2
-                if b_landed1:
-                    change_piece2 = False
-                    b_landed1 = False
-                    if self.can_move(block2, b_left2, b_top2):
-                        b_top2 = b_top2
-                    elif self.can_move(block2, b_left2, b_top2 - 1):
+                if not self.can_move(block2, b_left2, b_top2):
+                    if self.can_move(block2, b_left2, b_top2 - 1):
                         b_top2 = b_top2 - 1
                     elif self.can_move(block2, b_left2, b_top2 - 2):
                         b_top2 = b_top2 - 2
@@ -602,6 +605,15 @@ class Game(object):
                         mainloop, fall_speed, score, hold_block_type2, level, speed_x2, speed_y2 = self.lose_screen(
                             fall_speed, score,
                             hold_block_type2, level, speed_x2, speed_y2)
+                        fall_time = 0
+                        block_type = next_block_type
+                        next_block_type = new_block()
+                        rotate_val = 0
+                        block, rotate_val = rotate(block_type, rotate_val)
+                        b_left = 2
+                        b_top = 2
+                        temp_top = 2
+                        temp_left = 2
                         if not mainloop:
                             break
                     block_type2 = next_block_type2
