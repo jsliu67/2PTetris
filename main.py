@@ -550,6 +550,7 @@ class Game(object):
                             fall_speed, score,
                             hold_block_type, level, speed_x, speed_y)
                         # update other block
+                        level_font = font.render("LEVEL: %d" % level, True, (255, 255, 255))
                         block_type2 = next_block_type2
                         next_block_type2 = new_block2()
                         rotate_val2 = 0
@@ -605,6 +606,7 @@ class Game(object):
                         mainloop, fall_speed, score, hold_block_type2, level, speed_x2, speed_y2 = self.lose_screen(
                             fall_speed, score,
                             hold_block_type2, level, speed_x2, speed_y2)
+                        level_font = font.render("LEVEL: %d" % level, True, (255, 255, 255))
                         fall_time = 0
                         block_type = next_block_type
                         next_block_type = new_block()
@@ -630,7 +632,7 @@ class Game(object):
             # check for cleared lines
             clear = True
             for row in range(self.lines - 1, -1, -1):
-                for col in range(10):
+                for col in range(columns):
                     if landed[row][col] == 0:
                         clear = False
                         break
