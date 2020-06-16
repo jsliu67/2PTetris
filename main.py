@@ -322,14 +322,11 @@ class Game(object):
                     no_down = True
                     if last_fall >= down_interval:
                         last_fall = 0
-                        print(1)
                         change_piece = True
                     b_top -= 1
                 elif self.can_move(block, b_left, b_top):
                     no_down = False
                     last_fall = 0
-            print(change_piece)
-            print(last_fall)
             if fall_time2 / 1000.0 > fall_speed and not paused:
                 fall_time2 = 0
                 b_top2 += 1
