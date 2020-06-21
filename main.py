@@ -10,7 +10,7 @@ columns = 12  # height = 240
 playtime = 0.0
 FPS = 35
 pixel = 20
-init_fall_speed = 0.15
+init_fall_speed = 0.2
 offset_x = 230
 offset_y = 180
 
@@ -308,15 +308,16 @@ class Game(object):
             self.clock.tick_busy_loop(FPS)
 
             # level up
-            if score - score_diff >= 10:
+            if score - score_diff >= 30:
                 level += 1
-                score_diff = score
+                score_diff += 30
                 level_font = font.render("LEVEL: %d" % level, True, (255, 255, 255))
 
             # let block fall with interval
             if fall_time / 1000.0 > fall_speed and not paused:
                 fall_time = 0
                 b_top += 1
+                temp_top += 1
                 if not self.can_move(block, b_left, b_top):
                     last_fall += self.clock.get_time()
                     no_down = True
@@ -324,12 +325,14 @@ class Game(object):
                         last_fall = 0
                         change_piece = True
                     b_top -= 1
+                    temp_top -= 1
                 elif self.can_move(block, b_left, b_top):
                     no_down = False
                     last_fall = 0
             if fall_time2 / 1000.0 > fall_speed and not paused:
                 fall_time2 = 0
                 b_top2 += 1
+                temp_top2 += 1
                 if not self.can_move(block2, b_left2, b_top2):
                     last_fall2 += self.clock.get_time()
                     no_down2 = True
@@ -337,6 +340,7 @@ class Game(object):
                         last_fall2 = 0
                         change_piece2 = True
                     b_top2 -= 1
+                    temp_top2 -= 1
                 elif self.can_move(block2, b_left2, b_top2):
                     no_down2 = False
                     last_fall2 = 0
