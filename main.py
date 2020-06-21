@@ -308,7 +308,7 @@ class Game(object):
             self.clock.tick_busy_loop(FPS)
 
             # level up
-            if score - score_diff >= 10:
+            if score - score_diff >= 30:  # level up every 30 points
                 level += 1
                 score_diff = score
                 level_font = font.render("LEVEL: %d" % level, True, (255, 255, 255))
