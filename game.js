@@ -173,6 +173,7 @@ class Game {
         var folder = "data"
         pygame.mixer.music.load(os.path.join(folder, "theme.ogg"))
         self.clock = pygame.time.Clock()
+        
         self.blue = pygame.image.load(os.path.join(folder, "b.png"))
         self.dblue = pygame.image.load(os.path.join(folder, "d.png"))
         self.green = pygame.image.load(os.path.join(folder, "g.png"))
